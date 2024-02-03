@@ -11,12 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.currentRecomposeScope
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
@@ -36,7 +32,6 @@ import com.example.iphonecalculator.common.Button2
 import com.example.iphonecalculator.ui.theme.DarkGray
 import com.example.iphonecalculator.ui.theme.LightGray
 import com.example.iphonecalculator.ui.theme.Yellow
-import kotlin.math.roundToLong
 
 @Composable
 fun CalculatorScreen() {
@@ -73,6 +68,12 @@ fun CalculatorScreen() {
     var operation by remember {
         mutableStateOf("")
     }
+    var textColor by remember {
+        mutableStateOf(Color.White)
+    }
+    var backgroundColor by remember {
+        mutableStateOf(Yellow)
+    }
 
     fun updateTitleLength(newTitle : String): String{
         return if (newTitle.length < 9)
@@ -80,8 +81,7 @@ fun CalculatorScreen() {
         else
             strNumber.slice(listOf(0,1,2,3,4,5,6,7,8))
     }
-    var textColor = Color.White
-    var backgroundColor = Yellow
+
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -343,17 +343,22 @@ fun CalculatorScreen() {
                     textColor = textColor,
                     backgroundColor = backgroundColor,
                     onClick = {
-                        if(operation == "add") {
-                            strNumber = (result + strNumber.toDouble()).toString()
-                        }
-                        if(operation == "subtract") {
-                            strNumber = (result - strNumber.toDouble()).toString()
-                        }
-                        if(operation == "multiply") {
-                            strNumber = (result * strNumber.toDouble()).toString()
-                        }
-                        if(operation == "divide") {
-                            strNumber = (result / strNumber.toDouble()).toString()
+                        when(operation) {
+                            "add" -> {
+                                strNumber = (result + strNumber.toDouble()).toString()
+                            }
+
+                            "subtract" -> {
+                                strNumber = (result - strNumber.toDouble()).toString()
+                            }
+
+                            "multiply" -> {
+                                strNumber = (result * strNumber.toDouble()).toString()
+                            }
+
+                            "diivide" -> {
+                                strNumber = (result / strNumber.toDouble()).toString()
+                            }
                         }
                         strNumber = if (strNumber.endsWith(".0")) strNumber.substring(startIndex = 0, endIndex = strNumber.length-2) else strNumber
                         operation = ""
